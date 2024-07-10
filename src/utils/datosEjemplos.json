@@ -1,0 +1,61 @@
+{
+"products": [
+    {
+        "id": "1",
+        "title": "Smartphone",
+        "description": "Latest model with all new features",
+        "code": "SP001",
+        "price": 699.99,
+        "status": true,
+        "stock": 50,
+        "category": "Electronics",
+        "thumbnails": ["img/smartphone1.png", "img/smartphone2.png"]
+    },
+    {
+        "id": "2",
+        "title": "Laptop",
+        "description": "Powerful laptop for all your needs",
+        "code": "LP001",
+        "price": 1299.99,
+        "status": true,
+        "stock": 30,
+        "category": "Computers",
+        "thumbnails": ["img/laptop1.png", "img/laptop2.png"]
+    },
+    {
+        "id": "3",
+        "title": "Headphones",
+        "description": "Noise-cancelling over-ear headphones",
+        "code": "HP001",
+        "price": 199.99,
+        "status": true,
+        "stock": 100,
+        "category": "Accessories",
+        "thumbnails": ["img/headphones1.png"]
+    }
+],
+"carts":[
+    {
+        "id": "1",
+        "products": [
+            {
+                "product": "1",
+                "quantity": 2
+            },
+            {
+                "product": "3",
+                "quantity": 1
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "products": [
+            {
+                "product": "2",
+                "quantity": 1
+            }
+        ]
+    }
+]
+}
