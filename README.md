@@ -59,13 +59,19 @@ Desarrollar una aplicación de e-commerce para vender productos de un rubro a el
     "category": "string",
     "thumbnails": ["string"]
 }
-
+### Data de ejemplo
+La carpeta data contiene los archivos carts.json y products.json que contienen la estructura a definir proximamente en la base datos.
 ### Autenticación y autorización
 La API no utiliza autenticación.
 ## Estructura del proyecto
 ```
 ecommerce/
 ├── src/
+│   ├── assets/
+│   │   └── images/
+│   │       ├── products.png
+│   │       ├── productbyid.png
+│   │       └── cartsbyid.png
 │   ├── data/
 │   │   ├── products.json
 │   │   └── carts.json
@@ -86,4 +92,6 @@ ecommerce/
 ```
 ![Listado de productos](src/assets/images/products.png)
 ![Producto por ID](src/assets/images/productbyid.png)
+![Añadir Producto](src/assets/images/addproduct.png)
+![Añadir Producto](src/assets/images/addproduct2.png)
 ![Carrito por ID](src/assets/images/cartsbyid.png)
