@@ -72,6 +72,7 @@ router.put('/:pid', async (req, res) => {
         if (productIndex !== -1) {
             //const updatedProduct = { ...products[productIndex], ...req.body };
             const updatedProduct = { ...products[productIndex], title, description, code, price, status, stock, category };
+            //Se actualiza el campo thumbnails solo si está presente en el cuerpo de la solicitud.
             if (thumbnails) {
                 updatedProduct.thumbnails = thumbnails;
             }
