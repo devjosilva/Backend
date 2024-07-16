@@ -29,11 +29,29 @@ router.get('/:pid', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    const { title, description, code, price, status, stock, category, thumbnails = [] } = req.body;
+
+    if (!title || !description || !code || !price || !status || !stock || !category) {
+        return res.status(400).json({ error: 'Todos los campos excepto thumbnails son obligatorios' });
+    }    
     try {
-        const newProduct = req.body;
+        //const newProduct = req.body;
+        //newProduct.id = products.length ? String(products.length + 1) : '1';
+        //const newStatus = newProduct.status !== undefined ? newProduct.status : true;
         const products = await readFile(productsFilePath);
-        newProduct.id = products.length ? String(products.length + 1) : '1';
-        newProduct.status = newProduct.status !== undefined ? newProduct.status : true;
+        //Sugerencia de Agustín preEntrega1
+        const newId  = products.length > 0 ? parseInt(products[products.length - 1].id) + 1 : 1;
+        const newProduct = {
+            id: newId.toString(),
+            title,
+            description,
+            code,
+            price,
+            status,
+            stock,
+            category,
+            thumbnails
+        };        
         products.push(newProduct);
         await writeFile(productsFilePath, products);
         res.status(201).json(newProduct);
@@ -43,11 +61,20 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/:pid', async (req, res) => {
+    const { title, description, code, price, status, stock, category, thumbnails = [] } = req.body;
+
+    if (!title || !description || !code || !price || !status || !stock || !category) {
+        return res.status(400).json({ error: 'Todos los campos excepto thumbnails son obligatorios' });
+    }    
     try {
         const products = await readFile(productsFilePath);
         const productIndex = products.findIndex(p => p.id === req.params.pid);
         if (productIndex !== -1) {
-            const updatedProduct = { ...products[productIndex], ...req.body };
+            //const updatedProduct = { ...products[productIndex], ...req.body };
+            const updatedProduct = { ...products[productIndex], title, description, code, price, status, stock, category };
+            if (thumbnails) {
+                updatedProduct.thumbnails = thumbnails;
+            }
             if (req.body.id) delete req.body.id;
             products[productIndex] = updatedProduct;
             await writeFile(productsFilePath, products);

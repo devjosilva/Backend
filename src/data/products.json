@@ -52,5 +52,18 @@
       "img/tv001.png"
     ],
     "id": "4"
+  },
+  {
+    "id": "5",
+    "title": "Samsung Smart TV 60",
+    "description": "Samsung Smart TV 60",
+    "code": "TV001",
+    "price": 825.55,
+    "status": true,
+    "stock": 50,
+    "category": "Electronics",
+    "thumbnails": [
+      "img/tv001.png"
+    ]
   }
 ]
