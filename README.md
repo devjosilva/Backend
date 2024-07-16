@@ -25,8 +25,9 @@ Desarrollar una aplicación de e-commerce para vender productos de un rubro a el
 
 ## Configuración
 ### Variables de entorno
-`PORT`: El puerto en el que la aplicación se ejecutará (por defecto: 8089).\
-`DB_URI`: URI de conexión a la base de datos.
+`PORT`: El puerto en el que la aplicación se ejecutará (por defecto puerto: 8089).\
+        Nota: por laburo tengo una APP instalada que utiliza puerto 8080
+
 
 ## Uso
 - Inicia el servidor node app.js
