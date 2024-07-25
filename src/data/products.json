@@ -54,24 +54,13 @@
     "id": "4"
   },
   {
-    "id": "6",
-    "title": "prueba",
-    "description": "descddd",
-    "code": "Z001",
-    "price": "100",
-    "status": "false",
-    "stock": "100",
-    "category": "Ropa",
-    "thumbnails": []
-  },
-  {
-    "title": "TEST",
-    "description": "PRYEBA",
-    "code": "Z01",
-    "price": 100,
-    "stock": 50,
-    "category": "UDDD",
-    "thumbnails": [],
-    "id": "7"
+    "title": "ddddd",
+    "description": "d",
+    "code": "dd",
+    "price": 43,
+    "stock": 8,
+    "category": "dd",
+    "thumbnails": "dd",
+    "id": "8"
   }
 ]

@@ -12,7 +12,7 @@ const productsRouter = (io) => {
     router.get('/', async (req, res) => {
         try {
             const products = await readFile(PRODUCTS_FILE);
-            const limit = 1 //req.query.limit ? parseInt(req.query.limit) : products.length;
+            const limit = req.query.limit ? parseInt(req.query.limit) : products.length;
             res.json(products.slice(0, limit));
         } catch (error) {
             res.status(500).json({ error: `Error al leer el archivo ${PRODUCTS_FILE} en products  ` });
