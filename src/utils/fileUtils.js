@@ -1,21 +1,20 @@
-const fs = require('fs/promises');
-const path = require('path');
+import { promises as fs } from 'fs';
 
-const readFile = async (filePath) => {
+export const readFile = async (filename) => {
     try {
-        const data = await fs.readFile(path.join(__dirname, '../data', filePath), 'utf8');
+        const data = await fs.readFile(filename, 'utf-8');
         return JSON.parse(data);
     } catch (err) {
-        throw err;
+        console.error(`Error al leer archivo  desde fileUtil ${filename}: ${err.message}`);
+        throw new Error('Error al leer archivo  desde fileUtil');
     }
 };
 
-const writeFile = async (filePath, data) => {
+export const writeFile = async (filename, data) => {
     try {
-        await fs.writeFile(path.join(__dirname, '../data', filePath), JSON.stringify(data, null, 2));
+        await fs.writeFile(filename, JSON.stringify(data, null, 2));
     } catch (err) {
-        throw err;
+        console.error(`Error al escribir archivo desde fileUtil ${filename}: ${err.message}`);
+        throw new Error('Error al escribir archivo desde fileUtil ');
     }
 };
-
-module.exports = { readFile, writeFile };

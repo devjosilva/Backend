@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Formulario 1</h1>
+    <form action="/api/products" method="post">
+        <label for="nameID">Id</label>
+        <input type="text" id="nameID" name="id" readonly="true" >
+        <label for="nameTitle">title</label>
+        <input type="text" id="nameTitle" name="title">
+        <label for="nameDescripcion">description</label>
+        <input type="text" id="nameDescripcion" name="description">
+        <label for="nameCode">Code</label>
+        <input type="text" id="nameCode" name="code">
+        <label for="namePrice">Price</label>
+        <input type="text" id="namePrice" name="price">
+        <p>Seleccione un estado:</p>
+        <input type="radio" id="status1" name="status" value="true">
+        <label for="status1">Verdadero</label><br>
+        <input type="radio" id="status2" name="status" value="false">
+        <label for="status2">Falso</label><br>  
+        <label for="nameStock">Stock</label>
+        <input type="number" id="nameStock" name="stock">
+        <label for="nameCategory">Category</label>
+        <input type="text" id="nameCategory" name="category">
+        <label for="nameImages">Images</label>
+        <input type="text" id="nameImages" name="images">
+        <button type="submit">Agregar</button>
+    </form>
+
+    <h1>Formulario 2</h1>
+    <form action="">
+        <label for=""></label>
+        <input type="text">
+        <label for=""></label>
+        <label for=""></label>
+    </form>
+</body>
+</html>

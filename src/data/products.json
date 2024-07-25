@@ -54,16 +54,24 @@
     "id": "4"
   },
   {
-    "id": "5",
-    "title": "Samsung Smart TV 60",
-    "description": "Samsung Smart TV 60",
-    "code": "TV001",
-    "price": 825.55,
-    "status": true,
+    "id": "6",
+    "title": "prueba",
+    "description": "descddd",
+    "code": "Z001",
+    "price": "100",
+    "status": "false",
+    "stock": "100",
+    "category": "Ropa",
+    "thumbnails": []
+  },
+  {
+    "title": "TEST",
+    "description": "PRYEBA",
+    "code": "Z01",
+    "price": 100,
     "stock": 50,
-    "category": "Electronics",
-    "thumbnails": [
-      "img/tv001.png"
-    ]
+    "category": "UDDD",
+    "thumbnails": [],
+    "id": "7"
   }
 ]
