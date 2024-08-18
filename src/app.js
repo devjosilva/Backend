@@ -6,25 +6,20 @@ import { fileURLToPath } from 'url';
 import handlebars from 'express-handlebars';
 import productsRouter from './routes/products.js';
 import cartsRouter from './routes/carts.js';
-import { readFile, writeFile } from './utils/fileUtils.js';
-import { PRODUCTS_FILE, CARTS_FILE } from './utils/config.js';
-
-// Define helper functions
-const handlebarsInstance = handlebars.create();
-handlebarsInstance.handlebars.registerHelper('extend', function(name, options) {
-    if (!this._blocks) this._blocks = {};
-    this._blocks[name] = options.fn(this);
-    return null;
-});
-
-handlebarsInstance.handlebars.registerHelper('block', function(name) {
-    return (this._blocks && this._blocks[name]) ? this._blocks[name] : null;
-});
+import viewsRouter from './routes/views.router.js'; 
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import Product from './models/product.model.js'; 
+import Cart from './models/cart.model.js'; 
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const port = 8090
+// Especifica la ruta del archivo .env
+// Carga variables de entorno
+dotenv.config({ path: path.resolve(__dirname, './.env') });
+
+const port = 8090;
 
 const app = express();
 const server = createServer(app);
@@ -34,11 +29,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public'))); // Servir archivos estáticos
 
+const environment = async () => {
+    await mongoose.connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => {
+        console.log("Conectado a la base")
+    }).catch(error => {
+        console.log("error", error)
+    });
+};
+
+environment();
 
 // Configuración de Handlebars
 app.engine('handlebars', handlebars.engine({
   defaultLayout: 'main',
-  layoutsDir: path.join(__dirname, 'views/layouts')
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  runtimeOptions: {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true
+  }
 }));
 
 app.set('view engine', 'handlebars');
@@ -47,36 +59,61 @@ app.set('views', path.join(__dirname, 'views'));
 // Rutas
 app.use('/api/products', productsRouter(io)); // Pasa 'io' al router
 app.use('/api/carts', cartsRouter(io)); // Pasa 'io' al router
-
-// Rutas para vistas
-app.get('/home', async (req, res) => {
-    const products = await readFile(PRODUCTS_FILE);
-    res.render('home', { products, title: 'Home' });
-});
-
-app.get('/realtimeproducts', async (req, res) => {
-    const products = await readFile(PRODUCTS_FILE);
-    res.render('realTimeProducts', { products, title: 'Real-Time Products' });
-});
+app.use('/', viewsRouter);  // Usa el nuevo router para las vistas
 
 // WebSocket connection
 io.on('connection', (socket) => {
     console.log('Nuevo cliente conectado');
     
-    socket.on('newProduct', async (product) => {
-        const products = await readFile(PRODUCTS_FILE);
-        const newId = products.length > 0 ? parseInt(products[products.length - 1].id) + 1 : 1;
-        product.id = newId.toString();
-        products.push(product);
-        await writeFile(PRODUCTS_FILE, products);
-        io.emit('updateProducts', products);
+    socket.on('newProduct', async (productData) => {
+        try {
+            const newProduct = new Product(productData);
+            await newProduct.save();
+            const products = await Product.find();
+            io.emit('updateProducts', products);
+        } catch (error) {
+            console.error('Error al crear producto:', error);
+        }
     });
 
     socket.on('deleteProduct', async (id) => {
-        let products = await readFile(PRODUCTS_FILE);
-        products = products.filter(p => p.id !== id);
-        await writeFile(PRODUCTS_FILE, products);
-        io.emit('updateProducts', products);
+        try {
+            await Product.findByIdAndDelete(id);
+            const products = await Product.find();
+            io.emit('updateProducts', products);
+        } catch (error) {
+            console.error('Error al borrar producto:', error);
+        }
+    });
+
+    socket.on('newCart', async () => {
+        try {
+            const newCart = new Cart({ products: [] });
+            await newCart.save();
+            const carts = await Cart.find().populate('products.product');
+            io.emit('updateCarts', carts);
+        } catch (error) {
+            console.error('Error al crear carrito:', error);
+        }
+    });
+
+    socket.on('addProductToCart', async ({ cartId, productId }) => {
+        try {
+            const cart = await Cart.findById(cartId);
+            if (cart) {
+                const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+                if (productIndex !== -1) {
+                    cart.products[productIndex].quantity += 1;
+                } else {
+                    cart.products.push({ product: productId, quantity: 1 });
+                }
+                await cart.save();
+                const updatedCart = await Cart.findById(cartId).populate('products.product');
+                io.emit('updateCart', updatedCart);
+            }
+        } catch (error) {
+            console.error('Error al agregar producto al carrito:', error);
+        }
     });
 });
 
@@ -84,4 +121,3 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Servidor escuchando en el puerto ${port}`);
 });
-

@@ -3,12 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Listado de productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
-     <div class="container">
+    <div class="container">
         <h1>Lista de Productos</h1>
+        <div class="mb-3">
+            <label for="pagination-select" class="form-label">Productos por página:</label>
+            <select id="pagination-select" class="form-select">
+                <option value="1" selected>1</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="100">100</option>
+            </select>
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -23,22 +32,77 @@
                 </tr>
             </thead>
             <tbody id="product-list">
-                {{#each products}}
-                    <tr data-id="{{this.id}}">
-                        <td>{{this.id}}</td>
-                        <td>{{this.title}}</td>
-                        <td>{{this.description}}</td>
-                        <td>{{this.code}}</td>
-                        <td>{{this.price}}</td>
-                        <td>{{this.stock}}</td>
-                        <td>{{this.category}}</td>
-                        <td>{{this.thumbnails}}</td>
-                    </tr>
-                {{/each}}
+                <!--productos-->
             </tbody>
         </table>
+        <nav>
+            <ul class="pagination" id="pagination">
+                <!--paginación-->
+            </ul>
+        </nav>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const paginationSelect = document.getElementById('pagination-select');
+            const productList = document.getElementById('product-list');
+            const pagination = document.getElementById('pagination');
+            let currentPage = 1;
+
+            const fetchProducts = async (page, limit) => {
+                const response = await fetch(`/api/products?page=${page}&limit=${limit}`);
+                return await response.json();
+            };
+            const updateProductList = (products) => {
+                productList.innerHTML = '';
+                products.forEach(product => {
+                    const row = document.createElement('tr');
+                    row.dataset.id = product.id;
+                    row.innerHTML = `
+                        <td><a href="/api/products/${product._id}" >${product._id}</a></td>
+                        <td>${product.title}</td>
+                        <td>${product.description}</td>
+                        <td>${product.code}</td>
+                        <td>${product.price}</td>
+                        <td>${product.stock}</td>
+                        <td>${product.category}</td>
+                        <td>${product.thumbnails}</td>
+                    `;
+                    productList.appendChild(row);
+                });
+            };
+
+            const updatePagination = (totalPages) => {
+                pagination.innerHTML = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    const li = document.createElement('li');
+                    li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                    li.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        currentPage = i;
+                        loadProducts();
+                    });
+                    pagination.appendChild(li);
+                }
+            };
+
+            const loadProducts = async () => {
+                const limit = paginationSelect.value;
+                const data = await fetchProducts(currentPage, limit);
+                updateProductList(data.docs);
+                updatePagination(data.totalPages);
+            };
+
+            paginationSelect.addEventListener('change', () => {
+                currentPage = 1; // Reset to first page on limit change
+                loadProducts();
+            });
+
+            // Trigger initial load
+            loadProducts();
+        });
+    </script>
 </body>
 </html>

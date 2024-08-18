@@ -1,18 +1,26 @@
 import express from 'express';
-import { Router } from 'express';
-import { readFile, writeFile } from '../utils/fileUtils.js';
-import { CARTS_FILE, PRODUCTS_FILE } from '../utils/config.js';
+import Cart from '../models/cart.model.js'; 
+import Product from '../models/product.model.js'; 
 
-//const cartsFilePath = 'carts.json';
 const router = express.Router();
 
 const cartsRouter = (io) => {
 
+    // Ruta para listar todos los carritos
+    router.get('/', async (req, res) => {
+        try {
+            const carts = await Cart.find().populate('products.product');
+            //res.render('carts', { carts, title: 'Carritos de Compras' });
+            res.json(carts);
+        } catch (error) {
+            res.status(500).json({ error: 'Error al obtener los carritos' });
+        }
+    });
+
     // Ruta para listar carrito por id
     router.get('/:cid', async (req, res) => {
         try {
-            const carts = await readFile(CARTS_FILE);
-            const cart = carts.find(c => c.id === req.params.cid);
+            const cart = await Cart.findById(req.params.cid).populate('products.product');
             if (cart) {
                 res.json(cart.products);
             } else {
@@ -26,12 +34,8 @@ const cartsRouter = (io) => {
     // Ruta para crear carrito
     router.post('/', async (req, res) => {
         try {
-            const carts = await readFile(CARTS_FILE);
-            const newId  = carts.length > 0 ? parseInt(carts[carts.length - 1].id) + 1 : 1;
-            //const newCart = { id: carts.length ? String(carts.length + 1) : '1', products: [] };
-            const newCart = { id: newId, products: [] };
-            carts.push(newCart);
-            await writeFile(CARTS_FILE, carts);
+            const newCart = new Cart({ products: [] });
+            await newCart.save();
             res.status(201).json(newCart);
         } catch (error) {
             res.status(500).json({ error: 'Error al crear carro de compras.' });
@@ -41,16 +45,20 @@ const cartsRouter = (io) => {
     // Ruta para agregar producto a un carrito por Id
     router.post('/:cid/product/:pid', async (req, res) => {
         try {
-            const carts = await readFile(CARTS_FILE);
-            const cart = carts.find(c => c.id === req.params.cid);
+            const cart = await Cart.findById(req.params.cid);
             if (cart) {
-                const productIndex = cart.products.findIndex(p => p.product === req.params.pid);
+                const product = await Product.findById(req.params.pid);
+                if (!product) {
+                    return res.status(404).json({ error: 'Producto no encontrado.' });
+                }
+
+                const productIndex = cart.products.findIndex(p => p.product.toString() === req.params.pid);
                 if (productIndex !== -1) {
                     cart.products[productIndex].quantity += 1;
                 } else {
                     cart.products.push({ product: req.params.pid, quantity: 1 });
                 }
-                await writeFile(CARTS_FILE, carts);
+                await cart.save();
                 res.status(201).json(cart);
             } else {
                 res.status(404).json({ error: 'Carro de compras no encontrado.' });
