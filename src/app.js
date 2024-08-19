@@ -19,7 +19,8 @@ const __dirname = path.dirname(__filename);
 // Carga variables de entorno
 dotenv.config({ path: path.resolve(__dirname, './.env') });
 
-const port = 8090;
+//const port = 8090;
+const port = process.env.PORT || 8090
 
 const app = express();
 const server = createServer(app);
