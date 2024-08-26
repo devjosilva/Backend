@@ -9,6 +9,9 @@
     "dev": "nodemon ./src/app.js",
     "start_old": "node --watch ./src/app.js"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

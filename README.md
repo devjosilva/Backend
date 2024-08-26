@@ -59,10 +59,19 @@ Desarrollar una aplicación de e-commerce para vender productos de un rubro a el
     "category": "string",
     "thumbnails": ["string"]
 }
-### Data de ejemplo
-La carpeta data contiene los archivos carts.json y products.json que contienen la estructura a definir proximamente en la base datos.
+### Data
+## Modelos de Datos
+Product: Define la estructura de los productos.
+Cart: Define la estructura de los carritos
+
+## Conexión con MongoDB
+La conexión a MongoDB se establece usando Mongoose en el archivo app.js, el archivo .env contiene la conexion a la base datos.
+
+El archivo populare.js, pobla información de ejemplo en la base datos.
+
 ### Autenticación y autorización
 La API no utiliza autenticación.
+
 ## Estructura del proyecto
 ```
 ecommerce/
@@ -72,22 +81,52 @@ ecommerce/
 │   │       ├── products.png
 │   │       ├── productbyid.png
 │   │       └── cartsbyid.png
+│   │
 │   ├── data/
 │   │   ├── products.json
 │   │   └── carts.json
 │   │
-│   ├── routes/
-│   │       ├── products.js
-│   │       └── carts.js
+│   ├── models/
+│   │   ├── cart.model.js
+│   │   ├── polulate.js
+│   │   └── product.model.js
 │   │
-│   ├── app.js
-│   └── utils/
-│           ├── datosEjemplos.json
-│           └── fileUtils.js
+│   ├── routes/
+│   │       ├── carts.js
+│   │       ├── products.js
+│   │       └── view.router.js
+│   │
+│   ├── utils/
+│   │       ├── datosEjemplos.json
+│   │       └── fileUtils.js
+│   │
+│   ├── views/
+│   │       ├── carts.handlebars
+│   │       ├── home.handlebars
+│   │       └── realTimeProducto.handlebars
+│   │
+│   ├── .env
+│   │
+│   └── app.js
+│           
+│           
 ├── .gitignore    
 ├── package-lock.json    
 ├── package.json    
 └── README.md    
+
+```
+## Carpetas y Archivos
+```
+src/models/: Modelos de datos que definen la estructura de los productos y carritos.
+src/public/: Archivos estáticos como imágenes, scripts y hojas de estilo.
+src/router/: Define las rutas de la API y las vistas para el frontend.
+src/utils/: Helpers y scripts utilitarios.
+src/views/: Plantillas Handlebars para la visualización de productos y la gestión en tiempo real.
+src/app.js: Archivo principal que arranca el servidor y configura la aplicación.
+.gitignore: Lista de archivos y carpetas que Git debe ignorar.
+package.json: Configuración del proyecto y dependencias.
+README.md: Documentación del proyecto.
 
 ```
 ![Listado de productos](src/assets/images/products.png)
